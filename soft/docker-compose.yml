@@ -1,0 +1,336 @@
+version: "3.8"
+
+# 关于网络,如果用到mysql或者redis，并且希望在同一个网络，那么就可以直接使用同一个网络名
+networks:
+  common-net:
+    driver: bridge
+
+services:
+
+  redis:
+    restart: on-failure
+    container_name: redis
+    networks:
+      - common-net
+    image: redis:6.2.3
+    command: redis-server
+    expose:
+      - 6379
+    ports:
+      - "6379:6379"
+
+  nginx:
+    image: nginx:1.15
+    container_name: nginx
+    networks:
+      - common-net
+    volumes:
+      - ./nginx/html:/usr/share/nginx/html
+      - ./nginx/conf.d:/etc/nginx/conf.d/
+      #- C:/Users/35361/Documents/code/yamibuy/central:/central
+    ports:
+      - "80:80"
+    extra_hosts:
+      - damon.li:10.30.10.181
+
+  rabbitmq:
+    container_name: rabbitmq
+    networks:
+      - common-net
+    build:
+      context: ./rabbitmq
+      dockerfile: Dockerfile
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia
+      - ./rabbitmq/log/:/var/log/rabbitmq/
+    hostname: rabbit
+    privileged: true
+    environment:
+      RABBITMQ_DEFAULT_VHOST: /
+      RABBITMQ_DEFAULT_USER: rabbit
+      RABBITMQ_DEFAULT_PASS: 123456
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+
+  mongodb:
+    container_name: mongodb
+    networks:
+      - common-net
+    image: mongo:latest
+    environment:
+      # 时区上海
+      TZ: Asia/Shanghai
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 123456
+      MONGO_INITDB_DATABASE: testdb
+      MONGO_USERNAME: mongo
+      MONGO_PASSWORD: 123456
+    volumes:
+      - ./mongodb/data/db:/data/db # 挂载数据目录
+      - ./mongodb/data/log:/var/log/mongodb  # 挂载日志目录
+      - ./mongodb/data/config:/etc/mongo  # 挂载配置目录
+      #- ./mongodb/mongo-init.sh:/docker-entrypoint-initdb.d/mongo-init.sh
+    privileged: true
+    command: [ --auth ]
+    ports:
+      - "27017:27017"
+
+  minio:
+    container_name: minio
+    networks:
+      - common-net
+    image: minio/minio:latest
+    environment:
+      MINIO_ROOT_USER: root
+      MINIO_ROOT_PASSWORD: 12345678
+    volumes:
+      - ./minio/data:/data # 挂载数据目录
+      - ./minio/config:/root/.minio
+    privileged: true
+    command: server /data --console-address '0.0.0.0:9999'
+    logging:
+      options:
+        max-size: "50M" # 最大文件上传限制
+        max-file: "10"
+      driver: json-file
+    ports:
+      - "9000:9000"
+      - "9999:9999"
+
+  centos:
+    container_name: centos
+    networks:
+      - common-net
+    image: tutum/centos:latest
+    volumes:
+      - C:/Users/35361/Documents/code/yamibuy/central:/central
+    environment:
+      ROOT_PASS: 123456
+    privileged: true
+    ports:
+      - "22:22"
+
+  # 用户名、密码为root
+  ubuntu:
+    container_name: ubuntu
+    networks:
+      - common-net
+    image: itscaro/debian-ssh:latest
+    privileged: true
+    ports:
+      - "22:22"
+
+  mysql:
+    restart: on-failure
+    container_name: mysql
+    networks:
+      - common-net
+    image: mysql:8.0.26
+    volumes:
+      - ./mysql/data/db:/var/lib/mysql
+      - ./mysql/my.cnf:/etc/mysql/mysql.conf.d/mysqld.cnf
+      - ./mysql/init/:/docker-entrypoint-initdb.d/
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456 #访问密码
+      secure_file_priv:
+
+  mssql-2019:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: always
+    privileged: true
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=Sql@123456
+    #volumes:
+    #  - ./sqlserver/data:/var/opt/mssql/data
+    ports:
+      - "1433:1433"
+
+  postgreSQL:
+    container_name: postgreSQL
+    networks:
+      - common-net
+    image: postgres:latest
+    privileged: true
+    environment:
+      TZ: Asia/Shanghai
+      POSTGRES_PASSWORD: 123456
+      PGDATA: /var/lib/postgresql/data/pgdata
+    volumes:
+      - ./postgreSQL/data/:/var/lib/postgresql/data
+      - ./postgreSQL/log:/var/log/postgresql
+      - ./postgreSQL/init/:/docker-entrypoint-initdb.d/
+      - ./postgreSQL/postgres.conf:/etc/postgresql/postgresql.conf
+    # 从指定配置文件启动
+    command: -c 'config_file=/etc/postgresql/postgresql.conf'
+    ports:
+      - "5432:5432"
+
+  oracle:
+    container_name: oracle
+    image: oracleinanutshell/oracle-xe-11g
+    environment:
+      TZ: Asia/Shanghai
+      ORACLE_ALLOW_REMOTE: true
+    volumes:
+      - ./oracle/data/oracle/:/u01/app/oracle/
+    ports:
+      - "1521:1521"
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: elasticsearch:7.16.1
+    privileged: true
+    environment:
+      - "cluster.name=elasticsearch" #设置集群名称为elasticsearch
+      - "discovery.type=single-node" #以单一节点模式启动
+      - "ES_JAVA_OPTS=-Xms512m -Xmx1096m" #设置使用jvm内存大小
+      - bootstrap.memory_lock=true
+    volumes:
+      - ./es/plugins:/usr/share/elasticsearch/plugins #插件文件挂载
+      - ./es/data:/usr/share/elasticsearch/data:rw #数据文件挂载
+      - ./es/logs/:/user/share/elasticsearch/logs:rw
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 1000M
+        reservations:
+          memory: 200M
+
+  #https://github.com/nacos-group/nacos-docker
+  nacos:
+    restart: on-failure
+    container_name: nacos
+    image: nacos/nacos-server:latest
+    networks:
+      - common-net
+    volumes:
+      - ./nacos/standalone-logs/:/home/nacos/logs
+    environment:
+      PREFER_HOST_MODE: hostname
+      MODE: standalone
+      SPRING_DATASOURCE_PLATFORM: mysql
+      MYSQL_SERVICE_HOST: mysql
+      MYSQL_SERVICE_PORT: 3306
+      MYSQL_SERVICE_USER: root
+      MYSQL_SERVICE_DB_NAME: nacos
+      MYSQL_SERVICE_PASSWORD: 123456
+    depends_on:
+      - mysql
+    ports:
+      - "8848:8848"
+      - "9848:9848"
+      - "9555:9555"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/prometheus-standalone.yaml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+      #depends_on:
+      #- nacos
+
+  grafana:
+    container_name: grafana
+    image: grafana/grafana:latest
+    ports:
+      - "3000:3000"
+
+  # https://hub.docker.com/r/cliod/jrebel-server
+  # http://127.0.0.1:7001/5bc367d3-bcd5-4910-a910-8bd82378ca08
+  jrebel:
+    restart: always
+    container_name: jrebel
+    image: cliod/jrebel-server:latest
+    ports:
+      - "7001:7001"
+
+  rocketmq-namesrv:
+    image: rocketmqinc/rocketmq:latest
+    container_name: rocketmq-namesrv
+    volumes:
+      - ./rocketmq/namesrv/logs:/home/rocketmq/logs
+      - ./rocketmq/namesrv/store:/home/rocketmq/store
+    environment:
+      JAVA_OPT_EXT: "-Duser.home=/home/rocketmq -Xms256M -Xmx256M -Xmn128m"
+    command: [ "sh","mqnamesrv" ]
+    ports:
+      - "9876:9876"
+  rocketmq-broker:
+    image: rocketmqinc/rocketmq:latest
+    container_name: rocketmq-broker
+    volumes:
+      - ./rocketmq/broker/logs:/home/rocketmq/logs
+      - ./rocketmq/broker/store:/home/rocketmq/store
+      - ./rocketmq/broker/broker.conf:/etc/rocketmq/broker.conf
+    environment:
+      JAVA_OPT_EXT: "-Duser.home=/home/broker -Xms256M -Xmx256M -Xmn128m"
+    command: [ "sh","mqbroker","-c","/etc/rocketmq/broker.conf","-n","rocketmq-namesrv:9876","autoCreateTopicEnable=true" ]
+    depends_on:
+      - rocketmq-namesrv
+    ports:
+      - "10909:10909"
+      - "10911:10911"
+  # 入口在这里
+  rocketmq-console:
+    image: styletang/rocketmq-console-ng:latest
+    container_name: rocketmq-console
+    restart: always
+    environment:
+      JAVA_OPTS: "-Drocketmq.namesrv.addr=rocketmq-namesrv:9876 -Dcom.rocketmq.sendMessageWithVIPChannel=false"
+    depends_on:
+      - rocketmq-broker
+    ports:
+      - "8080:8080"
+
+  # 登录地址http://localhost:8081/xxl-job-admin
+  xxl-job:
+    restart: on-failure
+    image: xuxueli/xxl-job-admin:2.3.1
+    container_name: xxl-job
+    networks:
+      - common-net
+    volumes:
+      - ./xxljob/logs:/data/applogs
+    environment:
+      - "TZ=Asia/Shanghai"
+      - "spring_datasource_url=jdbc:mysql://mysql:3306/xxl_job?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&serverTimezone=Asia/Shanghai"
+      - "spring_datasource_username=root"
+      - "spring_datasource_password=123456"
+    depends_on:
+      - mysql
+    ports:
+      - "8081:8080"
+
+  jenkins:
+    image: jenkins/jenkins:latest
+    container_name: jenkins
+    volumes:
+      - ./jenkins/home:/var/jenkins_home
+    environment:
+      - "hudson_footerURL=http://dokcer-soft.com"
+    ports:
+      - "8082:8080"
+      - "50000:50000"
+
+  nexus3:
+    image: sonatype/nexus3:latest
+    container_name: nexus3
+    volumes:
+      - ./nexus/data:/nexus-data
+      - ./nexus/license:/nexus-data/license
+    environment:
+      TZL: Asia/Shanghai
+      NEXUS_CONTEXT: nexus
+      INSTALL4J_ADD_VM_PARAMS: "-Xms512m -Xmx2048m -XX:MaxDirectMemorySize=2048m -Djava.util.prefs.userRoot=/nexus-data/license"
+    ports:
+      - "8083:8081"

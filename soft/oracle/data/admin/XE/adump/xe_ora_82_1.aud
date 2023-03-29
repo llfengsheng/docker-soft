@@ -1,0 +1,23 @@
+Audit file /u01/app/oracle/admin/XE/adump/xe_ora_82_1.aud
+Oracle Database 11g Express Edition Release 11.2.0.2.0 - 64bit Production
+ORACLE_HOME = /u01/app/oracle/product/11.2.0/xe
+System name:	Linux
+Node name:	fab7d5f7e6ba
+Release:	5.10.102.1-microsoft-standard-WSL2
+Version:	#1 SMP Wed Mar 2 00:30:59 UTC 2022
+Machine:	x86_64
+Instance name: XE
+Redo thread mounted by this instance: 0 <none>
+Oracle process number: 22
+Unix process pid: 82, image: oracle@fab7d5f7e6ba (TNS V1-V3)
+
+Fri Oct 14 09:16:29 2022 +00:00
+LENGTH : '144'
+ACTION :[7] 'CONNECT'
+DATABASE USER:[1] '/'
+PRIVILEGE :[6] 'SYSDBA'
+CLIENT USER:[6] 'oracle'
+CLIENT TERMINAL:[0] ''
+STATUS:[1] '0'
+DBID:[0] ''
+

@@ -1,0 +1,26 @@
+<component name="libraryTable">
+  <library name="jlib2">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/ExprFilter.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/jmscommon.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/xdb_g.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/aqapi_g.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/aqxml_g.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/xdb.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/appctxapi.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/aqxml.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/jdm.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/usermigrate-1_0.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/extusrupgrade.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/ojdm_api.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/sqljtype.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/CDC.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/servlet.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/aqapi.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/ODCI.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/rdbms/jlib/CartridgeServices.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="elasticsearch-analysis-stconvert-7.16.1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/soft/es/plugins/analysis-stconvert/elasticsearch-analysis-stconvert-7.16.1.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

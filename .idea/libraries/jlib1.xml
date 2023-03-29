@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="jlib1">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/product/11.2.0/xe/jlib/orai18n-mapping.jar!/" />
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/product/11.2.0/xe/jlib/orai18n.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

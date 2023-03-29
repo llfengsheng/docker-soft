@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ons">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/opmn/lib/ons.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

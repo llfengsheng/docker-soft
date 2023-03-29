@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ottclasses">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/soft/oracle/data/oracle/product/11.2.0/xe/precomp/lib/ottclasses.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
